@@ -66,14 +66,17 @@
 					<div class="panel-heading">
 						<h3 class="panel-title">Form with conditions</h3>
 					</div>
-					<div class="panel-body">
-						<div id="container"></div>
+					<div class="panel-body" id="container">
+					</div>
+					<div class="panel-footer">
 						<div class="btn btn-primary btn_submit">Submit</div>
 					</div>
 				</div>
 				<hr />
-				<pre class="well well-sm" id="output">Once the form is submit, you'll see the output here.</pre>
+				<h4>Form Output</h4>
+				<pre class="well well-sm" id="output">Submit the form to see the output.</pre>
 				<hr />
+				<h4>Form JSON Code</h4>
 				<pre class="well well-sm" id="source">The source will display here.</pre>
 			</div>
 		</div>
@@ -92,18 +95,23 @@
 					label:			"Do you like this form generator?",
 					required:		true,
 					list: [{
-							value:		"yes",
-							label:		"Yes"
-						},{
-							value:		"no",
-							label:		"No"
-						}]
+						value:		"yes",
+						label:		"Yes"
+					},{
+						value:		"no",
+						label:		"No"
+					}]
 			},{
 					name:			"varchar",
 					type:			"varchar",
 					label:			"Why don't you like it?",
 					required:		true,
 					condition:		function(field) {
+						// single line comment
+						/*
+							another example.
+							multiline comment.
+						*/
 						return new field('like').equal('no');
 					}
 			},{
@@ -112,27 +120,27 @@
 					label:			"What would you use that script for?",
 					required:		true,
 					list: [{
-							value:		"surveys",
-							label:		"Creating surveys"
-						},{
-							value:		"quiz",
-							label:		"Creating Quizzes"
-						},{
-							value:		"idk",
-							label:		"I don't know yet"
-						}]
+						value:		"surveys",
+						label:		"Creating surveys"
+					},{
+						value:		"quiz",
+						label:		"Creating Quizzes"
+					},{
+						value:		"idk",
+						label:		"I don't know yet"
+					}]
 			},{
 					name:			"quiz_generator",
 					type:			"radio",
 					label:			"Would you like a quiz generator?",
 					required:		true,
 					list: [{
-							value:		"yes",
-							label:		"Yes"
-						},{
-							value:		"no",
-							label:		"No"
-						}],
+						value:		"yes",
+						label:		"Yes"
+					},{
+						value:		"no",
+						label:		"No"
+					}],
 					condition:		function(field) {
 						return new field('use_for').contains('quiz');
 					}

@@ -145,6 +145,8 @@
 						line:		line,
 						active:		true
 					};
+					// Hide by default.
+					line.line.hide();
 				}
 				return this;
 			}
@@ -203,8 +205,9 @@
 						this.fields[i].active	= false;
 						this.fields[i].line.line.slideUp();
 					}
-					
 				}
+			} else {
+				this.fields[i].line.line.slideDown();
 			}
 		}
 		// If there were updates, just keep going.
@@ -237,7 +240,8 @@
 		_.each(this.options.form, function(field) {
 			var fieldcopy = _.extend({}, field);
 			if (fieldcopy.condition) {
-				fieldcopy.condition = fieldcopy.condition.toString().replace(/[\t\r\n]/gm, '');
+				fieldcopy.condition = fieldcopy.condition.toString().replace(/\/\*[.\r\n\t\w\W\s]*\*\//, '').replace(/\/\/(.*)[\r\n]/gm, '').replace(/[\t\r\n]/gm, '');
+				// .replace(/[\t\r\n]/gm, '')
 			}
 			output.push(fieldcopy);
 		});
