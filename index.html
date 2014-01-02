@@ -1,0 +1,181 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+	<head>
+		<title>jSurvey</title>
+		<meta charset="UTF-8">
+		<link type="text/css" rel="stylesheet" href="src/css/jform.css" media="screen" />
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="http://underscorejs.org/underscore.js"></script>
+		<script type="text/javascript" src="src/js/dependencies/Arbiter.js"></script>
+		<script type="text/javascript" src="src/js/dependencies/json2.js"></script>
+		<script type="text/javascript" src="src/js/core.js"></script>
+		<script type="text/javascript" src="src/js/modules/varchar.js"></script>
+		<script type="text/javascript" src="src/js/modules/checkbox.js"></script>
+		<script type="text/javascript" src="src/js/modules/radio.js"></script>
+		<script type="text/javascript" src="src/js/modules/bootstrap.js"></script>
+		
+		<link rel="stylesheet" href="http://getbootstrap.com/dist/css/bootstrap.css">
+		<link rel="stylesheet" href="http://getbootstrap.com/examples/sticky-footer-navbar/sticky-footer-navbar.css">
+		<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+	</head>
+	<body>
+
+
+
+
+		<div id="wrap">
+		
+			<!-- Fixed navbar -->
+			<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+				<div class="container">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#">jform</a>
+					</div>
+					<div class="collapse navbar-collapse">
+						<ul class="nav navbar-nav">
+							<li class="active"><a href="#">Home</a></li>
+							<li><a href="#about">About</a></li>
+							<li><a href="#contact">Contact</a></li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li><a href="#">Action</a></li>
+									<li><a href="#">Another action</a></li>
+									<li><a href="#">Something else here</a></li>
+									<li class="divider"></li>
+									<li class="dropdown-header">Nav header</li>
+									<li><a href="#">Separated link</a></li>
+									<li><a href="#">One more separated link</a></li>
+								</ul>
+							</li>
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div>
+			</div>
+		
+			<!-- Begin page content -->
+			<div class="container" style="padding-top: 80px;">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Form with conditions</h3>
+					</div>
+					<div class="panel-body">
+						<div id="container"></div>
+						<div class="btn btn-primary btn_submit">Submit</div>
+					</div>
+				</div>
+				<hr />
+				<pre class="well well-sm" id="output">Once the form is submit, you'll see the output here.</pre>
+				<hr />
+				<pre class="well well-sm" id="source">The source will display here.</pre>
+			</div>
+		</div>
+		
+		<div id="footer">
+			<div class="container">
+				<p class="text-muted">&copy; Twenty-Six Medias, Inc 2014</p>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+			
+			var form = [{
+					name:			"like",
+					type:			"radio",
+					label:			"Do you like this form generator?",
+					required:		true,
+					list: [{
+							value:		"yes",
+							label:		"Yes"
+						},{
+							value:		"no",
+							label:		"No"
+						}]
+			},{
+					name:			"varchar",
+					type:			"varchar",
+					label:			"Why don't you like it?",
+					required:		true,
+					condition:		function(field) {
+						return new field('like').equal('no');
+					}
+			},{
+					name:			"use_for",
+					type:			"checkbox",
+					label:			"What would you use that script for?",
+					required:		true,
+					list: [{
+							value:		"surveys",
+							label:		"Creating surveys"
+						},{
+							value:		"quiz",
+							label:		"Creating Quizzes"
+						},{
+							value:		"idk",
+							label:		"I don't know yet"
+						}]
+			},{
+					name:			"quiz_generator",
+					type:			"radio",
+					label:			"Would you like a quiz generator?",
+					required:		true,
+					list: [{
+							value:		"yes",
+							label:		"Yes"
+						},{
+							value:		"no",
+							label:		"No"
+						}],
+					condition:		function(field) {
+						return new field('use_for').contains('quiz');
+					}
+			},{
+					name:			"quiz_generator_license",
+					type:			"radio",
+					label:			"...and would you pay for a commercial license to use the Quiz generator?",
+					required:		true,
+					list: [{
+							value:		"yes",
+							label:		"Yes"
+						},{
+							value:		"no",
+							label:		"No"
+						}],
+					condition:		function(field) {
+						return new field('quiz_generator').equal('yes');
+					}
+			}];
+			
+			//console.log("form",JSON.stringify(form));
+			
+			
+			
+			$(function() {
+				var jform = new window.jform().build($("#container"), {
+					form:		form,
+					submit:		$(".btn_submit"),
+					onSubmit:	function(data, jform) {
+						console.log("data",data);
+						jform.bootstrap.resetErrors();
+						$("#output").html(JSON.stringify(data, null, 4));
+					},
+					onError:	function(data, jform) {
+						console.log("error",data);
+						jform.bootstrap.showErrors();
+						$("#output").html("You have errors on the form.");
+					}
+				});
+				
+				$("#source").html(jform.stringify(true));
+				
+			});
+		</script>
+	</body>
+</html>
