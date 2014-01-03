@@ -1,0 +1,339 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+	<head>
+		<title>Form Generation Engine</title>
+		<meta charset="UTF-8">
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="http://underscorejs.org/underscore.js"></script>
+		<script type="text/javascript" src="src/js/dependencies/json2.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+		
+		<script type="text/javascript" src="src/js/core.js"></script>
+		<script type="text/javascript" src="src/js/modules/varchar.js"></script>
+		<script type="text/javascript" src="src/js/modules/checkbox.js"></script>
+		<script type="text/javascript" src="src/js/modules/radio.js"></script>
+		<script type="text/javascript" src="src/js/modules/bootstrap.js"></script>
+		
+		<link rel="stylesheet" href="http://getbootstrap.com/dist/css/bootstrap.css">
+		<link rel="stylesheet" href="http://getbootstrap.com/examples/sticky-footer-navbar/sticky-footer-navbar.css">
+		<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+		
+		<style type="text/css">
+			td, th {
+				text-align:	center;
+			}
+		</style>
+		
+	</head>
+	<body ng-app="editorApp" ng-controller="editorCtrl">
+		
+		<!-- Facebook code -->
+		<div id="fb-root"></div>
+		<script>(function(d, s, id) {
+		  var js, fjs = d.getElementsByTagName(s)[0];
+		  if (d.getElementById(id)) return;
+		  js = d.createElement(s); js.id = id;
+		  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=431907170224363";
+		  fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));</script>
+		
+		
+		<a href="https://github.com/26medias/jform"><img style="position: absolute; position: fixed; top: 0; right: 0; border: 0; z-index:5000;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+		
+		<div id="wrap">
+		
+			<!-- Fixed navbar -->
+			<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+				<div class="container">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#">jform</a>
+					</div>
+					<div class="collapse navbar-collapse">
+						<ul class="nav navbar-nav">
+							<li><a href="getting_started.html">Getting started</a></li>
+							<li><a href="index.html">Conditionnal form</a></li>
+							<li class="active"><a href="editor.html">Visual Editor</a></li>
+							<li><a href="mailto:julien@twenty-six-medias.com">Contact</a></li>
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div>
+			</div>
+		
+			<!-- Begin page content -->
+			<div class="container" style="padding-top: 80px;">
+				
+				<a href="javascript:document.getElementsByTagName('body')[0].appendChild(document.createElement('script')).setAttribute('src','//geekli.st/javascript/bookmarklet/bookmarklet.js')"><img src="//geekli.st/images/assets/GeekIt_wFace.png"></a>
+				<div class="fb-share-button" data-href="https://github.com/26medias/jform" data-type="button_count"></div>
+				<hr />
+				
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Form Editor (With Angularjs)</h3>
+					</div>
+					<div class="panel-body">
+						<!-- Single button -->
+						<div class="btn-group">
+							<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+								Add question <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="javascript:void(0);" ng-click="addQuestion('varchar')">Free Text (single line)</a></li>
+								<li><a href="javascript:void(0);" ng-click="addQuestion('radio')">Multiple Choice (radio)</a></li>
+								<li><a href="javascript:void(0);" ng-click="addQuestion('checkbox')">Multiple Choice (checkbox)</a></li>
+							</ul>
+						</div>
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Label</th>
+									<th>Required</th>
+									<th>Type</th>
+									<th>Answers</th>
+									<th>Option</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="question in form">
+									<td style="width:150px;">
+										<input type="text" class="form-control" ng-model="question.name" />
+									</td>
+									<td>
+										<input type="text" class="form-control" ng-model="question.label" />
+									</td>
+									<td>
+										<input type="checkbox" ng-model="question.required">
+									</td>
+									<td>
+										{{question.type}}
+									</td>
+									<td>
+										<button type="button" class="btn btn-primary" ng-click="editAnswers($index)" ng-show="question.list">
+											Edit Answers
+										</button>
+									</td>
+									<td>
+										<div class="btn-group">
+											<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+												Options <span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu" role="menu">
+												<li><a href="javascript:void(0);" ng-click="removeQuestion($index)">Remove</a></li>
+												<li><a href="javascript:void(0);" ng-click="moveQuestion($index,-1)">Move Up</a></li>
+												<li><a href="javascript:void(0);" ng-click="moveQuestion($index,1)">Move Down</a></li>
+											</ul>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="panel-footer">
+						<div class="btn btn-primary" ng-click="previewForm()">Preview my form</div>
+					</div>
+				</div>
+				<hr />
+				<h4>Form data for this example</h4>
+				<pre class="well well-sm" id="source">The source will display here.</pre>
+			</div>
+			
+			<!-- Modal -->
+			<div class="modal fade" id="answerModal" tabindex="-1" role="dialog" aria-labelledby="answerModal" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="answerModal">Edit answers</h4>
+						</div>
+						<div class="modal-body">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>Label</th>
+										<th>Value</th>
+										<th>Option</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="answer in selected.list">
+										<td>
+											<input type="text" class="form-control" ng-model="answer.label" />
+										</td>
+										<td>
+											<input type="text" class="form-control" ng-model="answer.value" />
+										</td>
+										<td>
+											<div class="btn-group">
+												<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+													Options <span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu" role="menu">
+													<li><a href="javascript:void(0);" ng-click="removeAnswer($index)">Remove</a></li>
+													<li><a href="javascript:void(0);" ng-click="moveAnswer($index,-1)">Move Up</a></li>
+													<li><a href="javascript:void(0);" ng-click="moveAnswer($index,1)">Move Down</a></li>
+												</ul>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-danger" ng-click="addAnswer()">Add a new answer</button>
+							<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveQuestion()">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
+			<!-- Modal -->
+			<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModal" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="previewModal">Form Preview</h4>
+						</div>
+						<div class="modal-body">
+							<div class="alert alert-danger" ng-repeat="(error, n) in formErrors">
+								<strong>[x{{n}}]</strong>
+								{{error}}
+							</div>
+							<div id="container"></div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-danger" id="submit">Submit (see output)</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="footer">
+			<div class="container">
+				<p class="text-muted">&copy; Twenty-Six Medias, Inc 2014</p>
+			</div>
+		</div>
+		
+		<script type="text/javascript">
+			var editorApp = angular.module('editorApp', []);
+			
+			editorApp.controller('editorCtrl', function ($scope) {
+				
+				$scope.form 		= [];
+				$scope.formErrors 	= {};
+				
+				$scope.selected 	= {
+					list:	[]
+				};
+				
+				$scope.$watch("form", function(newValue,oldValue) {
+					$("#source").html(angular.toJson($scope.form,true));
+				}, true);
+				
+				$scope.addQuestion = function(type) {
+					var item = {
+						name:		"question_name",
+						label:		"Question label",
+						type:		type,
+						required:	true
+					};
+					switch (type) {
+						case "checkbox":
+						case "radio":
+							item.list = [{
+								value:	"1",
+								label:	"Value #1"
+							},{
+								value:	"2",
+								label:	"Value #2"
+							}];
+						break;
+					}
+					
+					$scope.form.push(item);
+					
+				}
+				$scope.removeQuestion = function(idx){ 
+					$scope.form.splice(idx,1);
+				}
+				$scope.moveQuestion = function(idx, dir){ 
+					var newPos = idx+dir;
+					if (newPos < 0 || newPos>=$scope.form.length) {
+						return false;
+					}
+					var removed = $scope.form.splice(idx, 1);
+					$scope.form.splice(newPos, 0, removed[0]);
+					return true;
+				}
+				
+				$scope.addAnswer = function() {
+					$scope.selected.list.push({
+						value:		"answer_value",
+						label:		"Answer Label",
+					});
+				}
+				$scope.removeAnswer = function(idx){ 
+					$scope.selected.list.splice(idx,1);
+				}
+				$scope.moveAnswer = function(idx, dir){ 
+					var newPos = idx+dir;
+					if (newPos < 0 || newPos>=$scope.selected.list.length) {
+						return false;
+					}
+					var removed = $scope.selected.list.splice(idx, 1);
+					$scope.selected.list.splice(newPos, 0, removed[0]);
+					return true;
+				}
+				
+				$scope.editAnswers = function(idx){ 
+					$scope.selected_index = idx;
+					$scope.selected = $scope.form.slice(idx,idx+1)[0];
+					$('#answerModal').modal({
+						show:	true
+					});
+				}
+				$scope.saveQuestion = function(){ 
+					$scope.form[$scope.selected_index] = _.extend({},$scope.selected);
+				}
+				
+				
+				
+				$scope.previewForm = function(){ 
+					$('#previewModal').modal({
+						show:	true
+					});
+					$("#container").empty();
+					var jform = new window.jform().build($("#container"), {
+						form:		JSON.parse(angular.toJson($scope.form)),
+						submit:		$("#submit"),
+						onSubmit:	function(data, jform) {
+							jform.bootstrap.resetErrors();
+							alert(JSON.stringify(data, null, 4));
+						},
+						onError:	function(data, jform) {
+							jform.bootstrap.showErrors();
+							alert("You have errors on the form.");
+						},
+						onInit:	function(jform) {
+							// Display the form errors if there are any
+							$scope.formErrors = _.countBy(jform.formErrors, function(item) {
+								return item;
+							});
+						}
+					});
+				}
+				
+			});
+			
+		</script>
+	</body>
+</html>
