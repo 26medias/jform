@@ -10,6 +10,7 @@
 	jformFactory.prototype.register = function(name, factory, about) {
 		if (this.modules[name]) {
 			console.info("/!\ Module '"+name+"' is already defined. Duplicate:", about);
+			this.formErrors.push("/!\ Module '"+name+"' is already defined.");
 			return false;
 		} else {
 			this.modules[name] = factory;
@@ -20,6 +21,7 @@
 	jformFactory.prototype.plugin = function(name, data, about, overwrite) {
 		if (this.plugins[name] && !overwrite) {
 			console.info("/!\ Plugin '"+name+"' is already defined. Duplicate:", about);
+			this.formErrors.push("/!\ Plugin '"+name+"' is already defined.");
 			return false;
 		} else {
 			this.plugins[name] = data;
@@ -40,6 +42,7 @@
 		this.fields		= {};
 		this.data		= {};
 		this.errors		= [];
+		this.formErrors = [];
 		
 		this.theme		= {
 			line:	{
@@ -62,6 +65,7 @@
 		for (plugin in window.jformFactory.plugins) {
 			if (this[plugin]) {
 				console.error("/!\ Plugin '"+plugin+"' was refused. This name is either already in use internally or already registered by another plugin.");
+				this.formErrors.push("Plugin '"+plugin+"' was refused. This name is either already in use internally or already registered by another plugin.");
 			} else {
 				this[plugin] = window.jformFactory.plugins[plugin](this);
 				console.log("Plugin '"+plugin+"' has been installed.", this[plugin]);
@@ -71,7 +75,8 @@
 		// Conditionnal Framework, used to write easy display conditions in the form.
 		this.conditionFramework = function(fieldName) {
 			if (!scope.fields[fieldName]) {
-				console.error("/!\ field '"+fieldName+"' desn't exist.");
+				console.error("/!\ Condition: field '"+fieldName+"' desn't exist.");
+				scope.formErrors.push("Condition: field '"+fieldName+"' desn't exist.");
 				return this;
 			}
 			this.field 	= scope.fields[fieldName];
@@ -80,6 +85,7 @@
 		this.conditionFramework.prototype.equal = function(value) {
 			if (!this.field) {
 				console.error("/!\ Condition: No field selected.");
+				scope.formErrors.push("Condition: No field selected.");
 				return false;
 			}
 			if (!this.field.active) {
@@ -93,6 +99,7 @@
 		this.conditionFramework.prototype.contains = function(value) {
 			if (!this.field) {
 				console.error("/!\ Condition: No field selected.");
+				scope.formErrors.push("Condition: No field selected.");
 				return false;
 			}
 			if (!this.field.active) {
@@ -125,7 +132,8 @@
 			form:		{},
 			submit:		$(),
 			onSubmit:	function() {},
-			onError:	function() {}
+			onError:	function() {},
+			onInit:		function() {}
 		}, options);
 		
 		this.container 	= container;
@@ -140,10 +148,12 @@
 			
 			if (scope.fields[item.name]) {
 				console.info("/!\ field '"+item.name+"' is already defined. Duplicate:", scope.fields[item.name]);
+				scope.formErrors.push("field '"+item.name+"' is already defined.");
 				return this;
 			} else {
 				if (!window.jformFactory.modules[item.type]) {
 					console.info("/!\ factory '"+item.type+"' doesn't exist on ", item);
+					scope.formErrors.push("factory '"+item.type+"' doesn't exist.");
 					return this;
 				} else {
 					// Create a new instance of the question type
@@ -185,6 +195,8 @@
 		
 		// Check the conditions on the questions
 		this.executeConditions();
+		
+		scope.options.onInit(this);
 		
 		return this;
 	};
