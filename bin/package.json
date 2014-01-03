@@ -1,0 +1,11 @@
+{
+	"name": 		"node-builder",
+	"description": 	"Client-side library builder.",
+	"version":		"1.0.0",
+	"dependencies": {
+		"underscore":	"latest",
+		"node-minify":	"latest",
+		"walk":			"latest"
+	}
+}
+
