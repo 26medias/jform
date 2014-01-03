@@ -51,7 +51,12 @@
 					<div class="panel-heading">
 						<h3 class="panel-title">Form with conditions</h3>
 					</div>
-					<div class="panel-body" id="container">
+					<div class="panel-body">
+						<p>You can actually hide or show questions based on the value of other questions.</p>
+						<p>Conditionnal display allows you to build complex forms, ideal for market research for example.</p>
+						<p>jform has a really easy Conditionnal Framework. Example: <code>return new field('question_name').equal('no')</code> will display the current question if the question <u><i>question_name</i></u> has the value <u><i>no</i></u>. Look at the code of this page to see how easy it is!</p>
+						<p>&nbsp;</p>
+						<div id="container"></div>
 					</div>
 					<div class="panel-footer">
 						<div class="btn btn-primary btn_submit">Submit</div>
@@ -61,7 +66,7 @@
 				<h4>Form Output</h4>
 				<pre class="well well-sm" id="output">Submit the form to see the output.</pre>
 				<hr />
-				<h4>Form JSON Code</h4>
+				<h4>Form data for this example</h4>
 				<pre class="well well-sm" id="source">The source will display here.</pre>
 			</div>
 		</div>
@@ -91,14 +96,10 @@
 					type:			"varchar",
 					label:			"Why don't you like it?",
 					required:		true,
-					condition:		function(field) {
-						// single line comment
-						/*
-							another example.
-							multiline comment.
-						*/
+					/*condition:		function(field) {
 						return new field('like').equal('no');
-					}
+					}*/
+					condition:		"function (field) {return new field('like').equal('no');}"
 			},{
 					name:			"use_for",
 					type:			"checkbox",
@@ -127,6 +128,12 @@
 						label:		"No"
 					}],
 					condition:		function(field) {
+						// single line comment.
+						// All comments will be removed if you stringify the form data.
+						/*
+							another example.
+							multiline comment.
+						*/
 						return new field('use_for').contains('quiz');
 					}
 			},{

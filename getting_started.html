@@ -109,8 +109,7 @@
 				<p>Create a container and a submit button</p>
 				<pre>
 &lt;div id=&quot;form&quot;&gt;&lt;/div&gt;
-&lt;div id=&quot;submit&quot; class=&quot;btn btn-primary&quot;&gt;Submit form&lt;/div&gt;
-</pre>
+&lt;div id=&quot;submit&quot; class=&quot;btn btn-primary&quot;&gt;Submit form&lt;/div&gt;</pre>
 				
 				<hr />
 				<h4>Step 03</h4>
@@ -183,8 +182,13 @@ $(function() {	// We make sure jQuery is loaded before we generate the form.
 				<hr />
 				<h3>Demo:</h3>
 				
-				<div id="form"></div>
-				<div id="submit" class="btn btn-primary">Submit form</div>
+				<div class="panel panel-default">
+					<div class="panel-body" id="form"></div>
+					<div class="panel-footer">
+						<div id="submit" class="btn btn-primary">Submit form</div>
+					</div>
+				</div>
+				
 				
 				<script type="text/javascript">
 					var form = [{
