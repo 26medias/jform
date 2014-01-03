@@ -1,0 +1,251 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+	<head>
+		<title>jSurvey</title>
+		<meta charset="UTF-8">
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="http://underscorejs.org/underscore.js"></script>
+		<script type="text/javascript" src="src/js/dependencies/json2.js"></script>
+		<script type="text/javascript" src="src/js/core.js"></script>
+		<script type="text/javascript" src="src/js/modules/varchar.js"></script>
+		<script type="text/javascript" src="src/js/modules/checkbox.js"></script>
+		<script type="text/javascript" src="src/js/modules/radio.js"></script>
+		<script type="text/javascript" src="src/js/modules/bootstrap.js"></script>
+		
+		<link rel="stylesheet" href="http://getbootstrap.com/dist/css/bootstrap.css">
+		<link rel="stylesheet" href="http://getbootstrap.com/examples/sticky-footer-navbar/sticky-footer-navbar.css">
+		<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+	</head>
+	<body>
+		
+		<a href="https://github.com/26medias/jform"><img style="position: absolute; position: fixed; top: 0; right: 0; border: 0; z-index:5000;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+		
+		<div id="wrap">
+		
+			<!-- Fixed navbar -->
+			<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+				<div class="container">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#">jform</a>
+					</div>
+					<div class="collapse navbar-collapse">
+						<ul class="nav navbar-nav">
+							<li class="active"><a href="getting_started.html">Getting started</a></li>
+							<li><a href="index.html">Conditionnal form</a></li>
+							<li><a href="mailto:julien@twenty-six-medias.com">Contact</a></li>
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div>
+			</div>
+		
+			<!-- Begin page content -->
+			<div class="container" style="padding-top: 80px;">
+				<h4>Dependencies</h4>
+				<ul class="nav nav-pills nav-stacked" style="width:250px;">
+					<li>
+						<a href="http://jquery.com/" target="_blank">
+							<span class="badge pull-right">1.10</span>
+							jQuery
+						</a>
+						<a href="http://underscorejs.org" target="_blank">
+							<span class="badge pull-right">1.5</span>
+							Underscorejs
+						</a>
+						<a href="https://github.com/douglascrockford/JSON-js" target="_blank">
+							<span class="badge pull-right">2</span>
+							JSON
+						</a>
+					</li>
+				</ul>
+				<hr />
+				<h4>Optionnal</h4>
+				<ul class="nav nav-pills nav-stacked" style="width:250px;">
+					<li>
+						<a href="http://getbootstrap.com" target="_blank">
+							<span class="badge pull-right">3.0</span>
+							Bootstrap
+						</a>
+					</li>
+				</ul>
+				
+				<hr />
+				<h4>Step 01</h4>
+				<p>Include the JS files</p>
+				<pre>
+&lt;!-- Dependencies --&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://code.jquery.com/jquery-1.10.2.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://underscorejs.org/underscore.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;src/js/dependencies/json2.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- jform: Core --&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;src/js/core.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- jform question type: varchar (simple text input) --&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;src/js/modules/varchar.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- jform question type: checkbox --&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;src/js/modules/checkbox.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- jform question type: radio --&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;src/js/modules/radio.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- jform plugin: bootstrap (display form error using the bootstrap theme) --&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;src/js/modules/bootstrap.js&quot;&gt;&lt;/script&gt;</pre>
+				
+				<hr />
+				<h4>Step 02</h4>
+				<p>Create a container and a submit button</p>
+				<pre>
+&lt;div id=&quot;form&quot;&gt;&lt;/div&gt;
+&lt;div id=&quot;submit&quot; class=&quot;btn btn-primary&quot;&gt;Submit form&lt;/div&gt;
+</pre>
+				
+				<hr />
+				<h4>Step 03</h4>
+				<p>Define your form, it's a simple array.</p>
+				<pre>
+&lt;script type=&quot;text/javascript&quot;&gt;
+	var form = [{
+		name:			"question_1",
+		type:			"radio",
+		label:			"This is a radio question",
+		required:		true,
+		list: [{
+			value:		"A",
+			label:		"Choice A"
+		},{
+			value:		"B",
+			label:		"Choice B"
+		},{
+			value:		"C",
+			label:		"Choice C"
+		}]
+	},{
+		name:			"question_2",
+		type:			"varchar",
+		label:			"This is a varchar question",
+		required:		true
+	},{
+		name:			"question_3",
+		type:			"checkbox",
+		label:			"This is a checkbox question",
+		required:		true,
+		list: [{
+			value:		"A",
+			label:		"Choice A"
+		},{
+			value:		"B",
+			label:		"Choice B"
+		},{
+			value:		"C",
+			label:		"Choice C"
+		}]
+	}];
+&lt;/script&gt;</pre>
+
+				<hr />
+				<h4>Step 04</h4>
+				<p>Render the form</p>
+				<pre>
+&lt;script type=&quot;text/javascript&quot;&gt;
+$(function() {	// We make sure jQuery is loaded before we generate the form.
+	var jform = new window.jform().build($("#form"), {	// We are generating the form in the #form container
+		form:		form,			// The form data
+		submit:		$("#submit"),	// The submit button
+		onSubmit:	function(data, jform) {	// Executed when the entire form validates.
+			console.log("Form data:",data);
+			// We use the Bootstrap plugin, telling it to reset the previous error display
+			jform.bootstrap.resetErrors();
+		},
+		onError:	function(data, jform) {	// Executed when at least one question didn't validate.
+			console.log("Error:",data);
+			// We use the Bootstrap plugin, telling it to visually show us the errors using the bootstrap theme.
+			jform.bootstrap.showErrors();
+			// You can manage your own error display. "data" is an array containing the list of fields that did not validate.
+			// We won't do that int hat example.
+			alert("You have errors on the form.");
+		}
+	});
+});
+&lt;/script&gt;</pre>
+				<hr />
+				<h3>Demo:</h3>
+				
+				<div id="form"></div>
+				<div id="submit" class="btn btn-primary">Submit form</div>
+				
+				<script type="text/javascript">
+					var form = [{
+						name:			"question_1",
+						type:			"radio",
+						label:			"This is a radio question",
+						required:		true,
+						list: [{
+							value:		"A",
+							label:		"Choice A"
+						},{
+							value:		"B",
+							label:		"Choice B"
+						},{
+							value:		"C",
+							label:		"Choice C"
+						}]
+					},{
+						name:			"question_2",
+						type:			"varchar",
+						label:			"This is a varchar question",
+						required:		true
+					},{
+						name:			"question_3",
+						type:			"checkbox",
+						label:			"This is a checkbox question",
+						required:		true,
+						list: [{
+							value:		"A",
+							label:		"Choice A"
+						},{
+							value:		"B",
+							label:		"Choice B"
+						},{
+							value:		"C",
+							label:		"Choice C"
+						}]
+					}];
+					
+					$(function() {	// We make sure jQuery is loaded before we generate the form.
+						var jform = new window.jform().build($("#form"), {	// We are generating the form in the #form container
+							form:		form,			// The form data
+							submit:		$("#submit"),	// The submit button
+							onSubmit:	function(data, jform) {	// Executed when the entire form validates.
+								console.log("Form data:",data);
+								// We use the Bootstrap plugin, telling it to reset the previous error display
+								jform.bootstrap.resetErrors();
+							},
+							onError:	function(data, jform) {	// Executed when at least one question didn't validate.
+								console.log("Error:",data);
+								// We use the Bootstrap plugin, telling it to visually show us the errors using the bootstrap theme.
+								jform.bootstrap.showErrors();
+								// You can manage your own error display. "data" is an array containing the list of fields that did not validate.
+								// We won't do that int hat example.
+								alert("You have errors on the form.");
+							}
+						});
+					});
+				</script>
+			</div>
+		</div>
+		
+		<div id="footer">
+			<div class="container">
+				<p class="text-muted">&copy; Twenty-Six Medias, Inc 2014</p>
+			</div>
+		</div>
+	</body>
+</html>
