@@ -101,6 +101,7 @@
 									<th>Label</th>
 									<th>Required</th>
 									<th>Type</th>
+									<th>Condition</th>
 									<th>Answers</th>
 									<th>Option</th>
 								</tr>
@@ -118,6 +119,11 @@
 									</td>
 									<td>
 										{{question.type}}
+									</td>
+									<td>
+										<button type="button" class="btn btn-primary" ng-click="editConditions($index)">
+											Edit Conditions
+										</button>
 									</td>
 									<td>
 										<button type="button" class="btn btn-primary" ng-click="editAnswers($index)" ng-show="question.list">
@@ -198,6 +204,65 @@
 				</div>
 			</div>
 			
+			<!-- Modal -->
+			<div class="modal fade" id="conditionModal" tabindex="-1" role="dialog" aria-labelledby="conditionModal" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="conditionModal">Edit Conditions</h4>
+						</div>
+						<div class="modal-body">
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>Question</th>
+										<th>Operator</th>
+										<th>Value</th>
+										<th>Option</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="condition in selected.editor.conditions">
+										<td>
+											<select ng-model="condition.question" class="form-control">
+												<option ng-repeat="question in form" value="{{question.name}}">{{question.name}}</option>
+											</select>
+										</td>
+										<td>
+											<select ng-model="condition.operator" class="form-control">
+												<option value="equal">Equal</option>
+												<option value="contains" ng-show="indexedform[condition.question][0].list">Contains</option>
+											</select>
+										</td>
+										<td>
+											<input type="text" ng-model="condition.value" ng-show="!indexedform[condition.question][0].list" class="form-control" />
+											<select ng-model="condition.value" class="form-control" ng-show="indexedform[condition.question][0].list">
+												<option ng-repeat="answer in indexedform[condition.question][0].list" value="{{answer.value}}">{{answer.label}}</option>
+											</select>
+										</td>
+										<td>
+											<div class="btn-group">
+												<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+													Options <span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu" role="menu">
+													<li><a href="javascript:void(0);" ng-click="removeCondition($index)">Remove</a></li>
+												</ul>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-danger" ng-click="addCondition()">Add a new condition</button>
+							<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveQuestion()">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
 			
 			<!-- Modal -->
 			<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModal" aria-hidden="true">
@@ -236,6 +301,7 @@
 				
 				$scope.form 		= [];
 				$scope.formErrors 	= {};
+				$scope.indexedform 	= {};
 				
 				$scope.selected 	= {
 					list:	[]
@@ -243,6 +309,22 @@
 				
 				$scope.$watch("form", function(newValue,oldValue) {
 					$("#source").html(angular.toJson($scope.form,true));
+					
+					// Re-index the questions by name
+					$scope.indexedform = _.groupBy($scope.form, function(question) {
+						return question.name;
+					});
+					
+					// Recreate the condition function
+					_.each($scope.form, function(item) {
+						if (item.editor && item.editor.conditions && item.editor.conditions.length > 0) {
+							var conditions = [];
+							_.each(item.editor.conditions, function(condition) {
+								conditions.push("new field('"+condition.question+"')."+condition.operator+"('"+condition.value+"')");
+							});
+							item.condition = "function (field) {return "+conditions.join(' && ')+";}";
+						}
+					});
 				}, true);
 				
 				$scope.addQuestion = function(type) {
@@ -307,11 +389,39 @@
 						show:	true
 					});
 				}
+				$scope.editConditions = function(idx){ 
+					$scope.selected_index = idx;
+					$scope.selected = $scope.form.slice(idx,idx+1)[0];
+					if (!$scope.selected.editor) {
+						$scope.selected.editor = {};
+					}
+					if (!$scope.selected.editor.conditions) {
+						$scope.selected.editor.conditions = [];
+					}
+					$('#conditionModal').modal({
+						show:	true
+					});
+				}
+				$scope.removeCondition = function(idx){ 
+					$scope.selected.editor.conditions.splice(idx,1);
+				}
 				$scope.saveQuestion = function(){ 
 					$scope.form[$scope.selected_index] = _.extend({},$scope.selected);
 				}
 				
-				
+				$scope.addCondition = function(idx){ 
+					if (!$scope.selected.editor) {
+						$scope.selected.editor = {};
+					}
+					if (!$scope.selected.editor.conditions) {
+						$scope.selected.editor.conditions = [];
+					}
+					$scope.selected.editor.conditions.push({
+						question:	"",
+						operator:	"",
+						value:		""
+					});
+				}
 				
 				$scope.previewForm = function(){ 
 					$('#previewModal').modal({
